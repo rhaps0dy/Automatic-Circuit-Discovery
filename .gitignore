@@ -67,3 +67,6 @@ ob-jupyter
 
 jobs.yaml
 patch
+
+**/.mypy_cache
+.mypy_cache
