@@ -865,6 +865,7 @@ def get_points(corrs_and_scores, decreasing=True):
             init_point[f"{prefix}_tpr"] = 0.0
             init_point[f"{prefix}_precision"] = 1.0
         init_point[f"n_{prefix}s"] = math.nan
+    init_point["corr_edges"] = []
 
     end_point = {k: -math.inf for k in keys}
     for prefix in ["edge", "node"]:
@@ -873,6 +874,8 @@ def get_points(corrs_and_scores, decreasing=True):
             end_point[f"{prefix}_tpr"] = 1.0
             end_point[f"{prefix}_precision"] = 0.0
         end_point[f"n_{prefix}s"] = math.nan
+    # Include all edges for the virtual run with TPR = FPR = 1.
+    end_point["corr_edges"] = [(tuple(map(str, k)), 1.0) for k in corrs_and_scores[0][0].all_edges().keys()]
 
     if not decreasing:
         swap = init_point
@@ -893,13 +896,16 @@ def get_points(corrs_and_scores, decreasing=True):
         n_edges = corr.count_no_edges()
         n_nodes = len(filter_nodes(get_present_nodes(corr)[0]))
 
-        score.update({"n_edges": n_edges, "n_nodes": n_nodes})
-
+        score.update(
+            {
+                "n_edges": n_edges,
+                "n_nodes": n_nodes,
+                "corr_edges": [(tuple(map(str, k)), e.effect_size) for (k, e) in corr.all_edges().items() if e.present],
+            }
+        )
         if TASK != "induction":
             edge_stats = get_edge_stats(ground_truth=canonical_circuit_subgraph, recovered=corr)
             node_stats = get_node_stats(ground_truth=canonical_circuit_subgraph, recovered=corr)
-
-            score.update({"corr_edges": [(k, e.effect_size) for (k, e) in corr.all_edges().items() if e.present]})
 
             assert n_edges == edge_stats["recovered"]
             assert n_nodes == node_stats["recovered"]
@@ -1015,6 +1021,8 @@ if OUT_FILE is not None:
             ablation: {
                 args.task: {
                     args.metric: {
+                        # Convert list-of-dicts to dict-of-lists. Takes as canonical the keys of the first dict,
+                        # which are defined for the `init_point` variable in `get_points`.
                         ALG: {k: [p[k] for p in points[ALG]] for k in points[ALG][0].keys()},
                     },
                 },
