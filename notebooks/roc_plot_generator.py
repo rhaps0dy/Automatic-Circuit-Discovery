@@ -899,6 +899,8 @@ def get_points(corrs_and_scores, decreasing=True):
             edge_stats = get_edge_stats(ground_truth=canonical_circuit_subgraph, recovered=corr)
             node_stats = get_node_stats(ground_truth=canonical_circuit_subgraph, recovered=corr)
 
+            score.update({"corr_edges": [(k, e.effect_size) for (k, e) in corr.all_edges().items() if e.present]})
+
             assert n_edges == edge_stats["recovered"]
             assert n_nodes == node_stats["recovered"]
 
