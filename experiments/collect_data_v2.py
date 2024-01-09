@@ -23,6 +23,7 @@ metadata:
   name: {NAME}
   labels:
     kueue.x-k8s.io/queue-name: farai
+    project: acdc
 spec:
   ttlSecondsAfterFinished: 3600
   template:
