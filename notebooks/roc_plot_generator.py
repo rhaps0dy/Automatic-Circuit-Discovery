@@ -826,7 +826,7 @@ def get_sixteen_heads_corrs(
         if things is None:
             corr = None
         else:
-            nodes_to_mask += list(map(parse_interpnode, nodes))
+            nodes_to_mask = list(map(parse_interpnode, nodes))
             corr, head_parents = iterative_correspondence_from_mask(model=model, nodes_to_mask=nodes_to_mask, use_pos_embed=exp.use_pos_embed, corr=corr, head_parents=head_parents)
         cum_score += score
         score_d = {"score": cum_score, **score_d}
