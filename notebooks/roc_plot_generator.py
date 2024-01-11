@@ -288,10 +288,6 @@ elif TASK in ["tracr-reverse", "tracr-proportion"]: # do tracr
         raise NotImplementedError("not a tracr task")
 
     ACDC_PRE_RUN_FILTER["group"] = "acdc-tracr-neurips-5"
-    
-    if not ZERO_ABLATION:
-        ACDC_PRE_RUN_FILTER.pop("group")
-        ACDC_PROJECT_NAME = "remix_school-of-rock/arthur_tracr_fix"
 
     things = get_all_tracr_things(task=tracr_task, metric_name=METRIC, num_examples=num_examples, device=DEVICE)
 

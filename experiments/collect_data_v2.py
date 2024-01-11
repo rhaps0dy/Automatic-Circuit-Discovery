@@ -33,14 +33,14 @@ spec:
       priorityClassName: low-batch
       containers:
       - name: dummy
-        image: ghcr.io/arthurconmy/automatic-circuit-discovery:13057421
-        command: {COMMAND}
+        image: ghcr.io/arthurconmy/automatic-circuit-discovery:bb8ca96f
+        command: ["sleep", "2d"]
         resources:
           # Request CPUs, limit memory and GPUs.
           requests:
             cpu: {CPU}
           limits:
-            memory: "16G"
+            memory: "30G"
             nvidia.com/gpu: 0
         env:
         - name: WANDB_API_KEY
@@ -63,7 +63,7 @@ spec:
 """
 
 
-def main(alg: str, task: str, CPU: str = "2"):
+def main(alg: str, task: str, CPU: str = "6"):
     seed = 1233778640
     random.seed(seed)
 
@@ -121,6 +121,14 @@ TASKS_FOR = {
 
 
 if __name__ == "__main__":
-    for alg in TASKS_FOR.keys():
-        for task in TASKS_FOR[alg]:
-            main(alg, task)
+    complete_set = set()
+    main("acdc", "ioi")
+    # for alg in TASKS_FOR.keys():
+    #     for task in TASKS_FOR[alg]:
+    #         # for reset_network in [0, 1]:
+    #         #     for zero_ablation in [0, 1]:
+    #         #         for metric in METRICS_FOR_TASK[task]:
+    #         #             if alg == "canonical" and (task == "induction" or metric == "kl_div"):
+    #         #                 continue
+    #         #             complete_set.add(f"{alg}-{task}-{metric}-{bool(zero_ablation)}-{int(reset_network)}.json")
+    #         main(alg, task)
